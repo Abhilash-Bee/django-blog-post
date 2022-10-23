@@ -1,14 +1,23 @@
 from django.shortcuts import render, redirect
-from app.forms import CommentForm
+from app.forms import CommentForm, SubscribeForm
 from django.urls import reverse
-
-from app.models import Comment, Post
+from app.models import Comment, Post, Subscribe
 
 # Create your views here.
 def index(request):
-    posts = Post.objects.all()
+    if request.method == 'POST':
+        form = SubscribeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('app:index'))
+
+    top_posts = Post.objects.all().order_by('-views')[:3]
+    recent_posts = Post.objects.all().order_by('-last_updated')[:3]
+    form = SubscribeForm()
     context = {
-        'posts': posts
+        'form': form,
+        'top_posts': top_posts,
+        'recent_posts': recent_posts,
     }
     return render(request, 'app/index.html', context=context)
 

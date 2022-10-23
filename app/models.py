@@ -1,8 +1,26 @@
+from enum import unique
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User 
 
 # Create your models here.
+class Subscribe(models.Model):
+    """Model definition for Subscribe."""
+
+    email = models.EmailField(max_length=254, unique=True)
+    date = models.DateField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        """Meta definition for Subscribe."""
+
+        verbose_name = 'Subscribe'
+        verbose_name_plural = 'Subscribes'
+
+    def __str__(self):
+        """Unicode representation of Subscribe."""
+        return self.email
+
+
 class Tag(models.Model):
     """Model definition for Tag."""
 
