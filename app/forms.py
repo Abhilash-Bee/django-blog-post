@@ -22,7 +22,14 @@ class SubscribeForm(forms.ModelForm):
         """Meta definition for Subscribeform."""
         model = Subscribe
         fields = '__all__'
-        labels = {'email': '',}
+        labels = {
+            'email': '',
+        }
+        error_messages = {
+            'email': {
+                'unique': 'Email already exists',
+            }
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

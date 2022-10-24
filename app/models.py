@@ -1,9 +1,33 @@
+from email.policy import default
 from enum import unique
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User 
 
 # Create your models here.
+class Profile(models.Model):
+    """Model definition for Profile."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(upload_to='images/', null=True, blank=True)
+    slug = models.SlugField(max_length=200, unique=True)
+    bio = models.CharField(max_length=200)
+
+    class Meta:
+        """Meta definition for Profile."""
+
+        verbose_name = 'Profile'
+        verbose_name_plural = 'Profiles'
+
+    def __str__(self):
+        """Unicode representation of Profile."""
+        return self.user.first_name
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.user.username)
+        return super(Profile, self).save(*args, **kwargs)
+
+
 class Subscribe(models.Model):
     """Model definition for Subscribe."""
 
@@ -48,11 +72,13 @@ class Post(models.Model):
 
     title = models.CharField(max_length=200)
     content = models.TextField()
-    last_updated = models.DateField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(null=True, blank=True, upload_to="images/", height_field=None, width_field=None, max_length=None)
     views = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag, blank=True, related_name='post')
+    is_featured = models.BooleanField(default=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         """Meta definition for Post."""

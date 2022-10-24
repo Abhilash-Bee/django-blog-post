@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from app.forms import CommentForm, SubscribeForm
 from django.urls import reverse
-from app.models import Comment, Post, Subscribe
+from app.models import Comment, Post, Tag
 
 # Create your views here.
 def index(request):
@@ -14,10 +14,14 @@ def index(request):
     top_posts = Post.objects.all().order_by('-views')[:3]
     recent_posts = Post.objects.all().order_by('-last_updated')[:3]
     form = SubscribeForm()
+    featured_post = Post.objects.filter(is_featured=True)
+    if featured_post:
+        featured_post = featured_post[0]
     context = {
         'form': form,
         'top_posts': top_posts,
         'recent_posts': recent_posts,
+        'featured_post': featured_post,
     }
     return render(request, 'app/index.html', context=context)
 
@@ -52,3 +56,17 @@ def post_page(request, slug):
         'comments': comments,
     }
     return render(request, 'app/post.html', context=context)
+
+def tag_page(request, slug):
+    post_name = Tag.objects.get(slug=slug).name
+    top_posts = Tag.objects.get(slug=slug).post.all().order_by('-views')[:2]
+    recent_posts = Tag.objects.get(slug=slug).post.all().order_by('-last_updated')[:3]
+    other_tags = Tag.objects.all()
+    context = {
+        'post_name': post_name,
+        'top_posts': top_posts,
+        'recent_posts': recent_posts,
+        'other_tags': other_tags,
+        'slug': slug,
+    }
+    return render(request, 'app/tag.html', context=context)
