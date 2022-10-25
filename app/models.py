@@ -5,6 +5,25 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User 
 
 # Create your models here.
+class WebsiteMeta(models.Model):
+    """Model definition for WebsiteMeta."""
+
+    title = models.CharField(max_length=200)
+    description = models.CharField(max_length=500)
+    about = models.TextField()
+
+    class Meta:
+        """Meta definition for WebsiteMeta."""
+
+        verbose_name = 'WebsiteMeta'
+        verbose_name_plural = 'WebsiteMetas'
+
+    def __str__(self):
+        """Unicode representation of WebsiteMeta."""
+        return self.title
+
+
+
 class Profile(models.Model):
     """Model definition for Profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)

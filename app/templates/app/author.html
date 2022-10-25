@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-  Blog | {{ post.name }}
-{% endblock title %}
-  
 
-{% block content %}
+{% block title %}
+  Blog | {{ author.user.first_name }}
+{% endblock title %}
+
+{% block content %}  
       <div class="container">
         <div class="layout">
           <!-- left layout -->
@@ -18,17 +18,16 @@
                     <span class="material-icons"> keyboard_return </span> Go
                     back
                   </a>
-                  <h1>Tag</h1>
+                  <h1>Author</h1>
                 </div>
               </div>
             </div>
 
             <center>
               <div class="typo">
-                <h1 class="title">{{ post_name }}</h1>
+                <h1 class="title">{{ author.user.first_name }}</h1>
                 <p>
-                  Lorem ipsum began as scrambled, nonsensical Latin derived from
-                  Cicero's 1st-century BC text De Finibus Bonorum et Malorum.
+                  {{ author.bio }}
                 </p>
               </div>
             </center>
@@ -36,13 +35,15 @@
               <div class="container">
                 <h1 class="sec-title">Top posts</h1>
                 <div class="grid-2 blog">
+                  <!-- card -->
                   {% include 'app/top_posts.html' %}
+                  <!-- card end-->
                 </div>
               </div>
             </section>
             <section class="sp">
               <div class="container">
-                <h1 class="sec-title">Recent posts</h1>
+                <h1 class="sec-title">Trendy</h1>
                 <div class="grid-3 blog-grid">
                   <!-- card -->
                   {% include 'app/recent_posts.html' %}
@@ -62,14 +63,25 @@
           <!-- right layout -->
           <div class="right">
             <div class="block">
-              <h2 class="title2">Other Tags</h2>
-              <div class="blog-tags">
-                {% for tag in other_tags %}
-                    <a href="{% url 'app:tag_page' tag.slug %}">
-                      <div class="tag">{{ tag.name }}</div>
-                    </a>
-                {% endfor %}
-              </div>
+              <h2 class="title2">Top Authors</h2>
+              {% for author in top_authors %}
+                {% if author.profile.slug != 'admin' %}
+                  <div class="recent-post other-author">
+                    <div class="rounded-img">
+                      <img src="{{ author.profile.profile_image.url }}" alt="" />
+                    </div>
+                    <div class="recent-content">
+                      <h3>
+                        {{ author.first_name }}
+                      </h3>
+                      <a class="learn" href="{% url 'app:author_page' author.profile.slug %}"
+                        >Learn more
+                        <span class="material-icons"> trending_flat </span></a
+                      >
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
             </div>
           </div>
           <!-- right layout end -->
